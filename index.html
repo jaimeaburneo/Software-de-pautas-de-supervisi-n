@@ -1,0 +1,2461 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pautas de cotejo</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2312273f'/%3E%3Cpath d='M11 6h2v5h5v2h-5v5h-2v-5H6v-2h5z' fill='%23dfc369'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --s1: #12273f;
+      --s2: #0d1b2c;
+      --border: #0d1b2c;
+      --t1: #ffffff;
+      --t2: #c4c9cf;
+      --t3: #c4c9cf;
+      --green: #dfc369;
+      --font: Arial, Helvetica, sans-serif;
+      --font-head: 'Poppins', 'Century Gothic', Futura, Arial, sans-serif;
+      --pc-bg: #f6f6f6;
+      --pc-border: #d8dbdf;
+      --pc-ink: #12273f;
+      --pc-muted: #3f4e5e;
+      --pc-soft: #f6f6f6;
+      --pc-green: #0e8a5f;
+      --pc-green-dark: #0b6b4a;
+      --pc-green-soft: #e3f4ec;
+      --pc-red: #d64545;
+      --pc-red-soft: #fdecec;
+      --pc-amber: #b97a10;
+      --pc-amber-soft: #fdf3e0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: #ffffff;
+      color: var(--t1);
+      font-family: var(--font);
+      font-size: 14px;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--s1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 0 12px;
+      gap: 0;
+      transition: width 300ms ease, padding 300ms ease;
+    }
+
+    .sidebar.collapsed {
+      width: 72px;
+      padding: 0 12px;
+    }
+
+    .sidebar-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 64px;
+      margin: 0 -12px 16px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .sidebar-avatar {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #dfc369;
+      color: #12273f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sidebar-profile-info {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-profile-info strong {
+      color: var(--t1);
+      font-size: 14px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-profile-info span {
+      color: var(--t2);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar.collapsed .sidebar-profile,
+    .sidebar.collapsed .nav-item,
+    .sidebar.collapsed .sidebar-collapse {
+      justify-content: center;
+      gap: 0;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .sidebar.collapsed .nav-item,
+    .sidebar.collapsed .sidebar-collapse { font-size: 0; }
+
+    .sidebar.collapsed .sidebar-profile-info { display: none; }
+
+    .sidebar.collapsed .sidebar-profile {
+      margin-left: -12px;
+      margin-right: -12px;
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-height: 40px;
+      margin-bottom: 4px;
+      padding: 10px 12px;
+      border-radius: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      color: var(--t2);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 200ms, color 200ms;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .nav-item:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--t1);
+    }
+
+    .nav-item.active {
+      background: var(--s2);
+      color: var(--t1);
+    }
+
+    .nav-item svg,
+    .nav-item img {
+      width: 20px !important;
+      height: 20px !important;
+      min-width: 20px;
+      min-height: 20px;
+      flex-shrink: 0;
+      opacity: 1;
+      transition: transform 200ms, color 200ms, stroke 200ms;
+    }
+
+    .nav-item img {
+      display: block;
+      object-fit: contain;
+      border-radius: 3px;
+    }
+
+    .nav-icon-layers {
+      transform: scale(0.9);
+      transform-origin: center;
+    }
+
+    .nav-item.active svg {
+      opacity: 1;
+      color: var(--green);
+      stroke: var(--green);
+    }
+
+    /* Menú desplegable (Reservas) con sub-opciones */
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-parent {
+      cursor: pointer;
+    }
+
+    .nav-parent-label {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .nav-item .nav-chevron {
+      width: 14px !important;
+      height: 14px !important;
+      min-width: 14px;
+      min-height: 14px;
+      margin-left: auto;
+      color: var(--t2);
+      stroke: var(--t2);
+      transition: transform 220ms ease;
+    }
+
+    .nav-group.open .nav-chevron {
+      transform: rotate(180deg);
+      color: var(--green);
+      stroke: var(--green);
+    }
+
+    .nav-sub-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 2px 0 6px 22px;
+      padding-left: 14px;
+      border-left: 1px solid #34373c;
+    }
+
+    .nav-group:not(.open) .nav-sub-group {
+      display: none;
+    }
+
+    .nav-sub-item {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      color: var(--t2);
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: background 160ms, color 160ms;
+    }
+
+    .nav-sub-item:hover {
+      color: var(--t1);
+    }
+
+    .nav-sub-item.active {
+      color: var(--green);
+    }
+
+    .sidebar.collapsed .nav-sub-group,
+    .sidebar.collapsed .nav-chevron,
+    .sidebar.collapsed .nav-parent-label {
+      display: none;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .sidebar-collapse {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 64px;
+      margin: 0 -12px;
+      padding: 0 12px;
+      border-top: 1px solid var(--border);
+      border-radius: 0;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      color: var(--t3);
+      cursor: pointer;
+      transition: color 200ms, background 200ms;
+    }
+
+    .sidebar-collapse:hover {
+      color: var(--t1);
+    }
+
+    .sidebar-collapse svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      transition: transform 300ms ease;
+    }
+
+    .sidebar.collapsed .sidebar-collapse svg {
+      transform: rotate(180deg);
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    /* Pages */
+    .page {
+      display: none;
+      flex: 1;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .page.active {
+      display: flex;
+      animation: pageIn 220ms ease;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .main ::-webkit-scrollbar { width: 10px; height: 10px; }
+    .main ::-webkit-scrollbar-track { background: transparent; }
+    .main ::-webkit-scrollbar-thumb { background: #d3d7dc; border-radius: 0; border: 2px solid #ffffff; }
+    .main ::-webkit-scrollbar-thumb:hover { background: #b9bfc7; }
+
+    /* ===== Pauta de cotejo — GCL 1.1 ===== */
+    .checklist-page {
+      background: #ffffff;
+      color: var(--pc-ink);
+      overflow: auto;
+      padding: 26px;
+      font-family: var(--font);
+    }
+
+    .pc-shell {
+      width: min(1220px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .pc-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 150px;
+      height: 40px;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      background: #ffffff;
+      color: var(--pc-ink);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 140ms, box-shadow 140ms, background 140ms, border-color 140ms;
+    }
+
+    .pc-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(18, 39, 63, 0.12);
+      border-color: #aab3bf;
+    }
+
+    .pc-btn.primary { background: var(--green); border-color: var(--green); color: #12273f; }
+    .pc-btn.primary:hover { background: #d2b452; border-color: #d2b452; color: #12273f; }
+    .pc-btn.print { background: #3f7cac; border-color: #3f7cac; color: #ffffff; }
+    .pc-btn.print:hover { background: #356a94; border-color: #356a94; }
+    .pc-btn.pdf { background: #ec1c24; border-color: #ec1c24; color: #ffffff; }
+    .pc-btn.pdf:hover { background: #c8151b; border-color: #c8151b; }
+    .pc-btn.word { background: #1e6b3e; border-color: #1e6b3e; color: #ffffff; }
+    .pc-btn.word:hover { background: #185932; border-color: #185932; }
+
+    .cashflow-axis-label { font-size: 11.5px; font-weight: 400; font-family: var(--font); }
+
+    .pc-filtro { display: flex; flex-direction: column; gap: 4px; }
+    .pc-filtro label { font-size: 11.5px; font-weight: 700; color: var(--pc-muted); letter-spacing: 0.2px; }
+
+    /* Indicadores: medidores circulares */
+    .pc-ind-fila {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .pc-ind-fila { grid-template-columns: 1fr; }
+    }
+
+    .pc-chart {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 34px 44px;
+      padding: 16px 22px;
+      background: #ffffff;
+    }
+
+    .pc-gauge-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pc-gauge-svg { width: 250px; height: 250px; max-width: 100%; }
+
+    .pc-gauge-num {
+      font-family: var(--font-head);
+      font-size: 34px;
+      font-weight: 700;
+      fill: var(--pc-green);
+    }
+
+    .pc-gauge-den {
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      fill: #8a939e;
+    }
+
+    .pc-chart-lbl {
+      margin-top: 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--pc-ink);
+      text-align: center;
+      line-height: 1.35;
+    }
+
+    .pc-chart-lbl span { display: block; font-weight: 600; font-size: 11.5px; color: var(--pc-muted); }
+
+    .pc-chart .pc-empty-state { width: 100%; }
+
+    /* Tarjetas de observación */
+    .pc-obs-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .pc-obs-card {
+      background: #f6f6f6;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      overflow: hidden;
+      transition: opacity 200ms;
+    }
+
+    .pc-obs-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 16px;
+      border-bottom: 1px solid #dde0e4;
+      background: #ffffff;
+    }
+
+    .pc-obs-title { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: var(--pc-ink); }
+
+    .pc-obs-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 0;
+      background: #12273f;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pc-obs-body {
+      padding: 14px 16px 16px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .pc-field { display: grid; gap: 6px; align-content: start; }
+    .pc-field.full { grid-column: 1 / -1; }
+
+    .pc-field label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: none;
+      color: var(--pc-muted);
+    }
+
+    .pc-input,
+    .pc-select {
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      background: #ffffff;
+      color: var(--pc-ink);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 0 10px;
+      outline: none;
+      transition: border-color 150ms, box-shadow 150ms;
+    }
+
+    .pc-select { cursor: pointer; }
+
+    .pc-input:focus,
+    .pc-select:focus {
+      border-color: #12273f;
+      box-shadow: 0 0 0 3px rgba(18, 39, 63, 0.16);
+    }
+
+    .pc-rut {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 0;
+      border: 1px dashed #b9c2cc;
+      background: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--pc-ink);
+    }
+
+    .pc-rut.empty { color: #7a8593; font-weight: 600; }
+
+    /* Paneles */
+    .pc-panel {
+      background: #f6f6f6;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .pc-panel-title,
+    .page-head-title,
+    .pc-obs-title,
+    .pc-modal-title,
+    .pc-crit-title,
+    .pc-empty-state strong,
+    .sidebar-profile-info strong {
+      font-family: var(--font-head);
+      letter-spacing: 0.2px;
+    }
+
+    .pc-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      border-bottom: 1px solid #dde0e4;
+    }
+
+    .pc-panel-title { font-size: 15px; font-weight: 700; color: var(--pc-ink); }
+    .pc-panel-sub { color: var(--pc-muted); font-size: 13px; margin-top: 3px; }
+
+    .pc-legend { display: flex; align-items: center; gap: 14px; font-size: 12px; font-weight: 700; color: var(--pc-muted); margin-right: 6px; }
+    .pc-legend i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin-right: 6px; vertical-align: -2px; }
+
+    /* Tabla de criterios */
+    .pc-table-wrap { overflow-x: auto; }
+
+    .pc-table {
+      width: 100%;
+      min-width: 880px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    .pc-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #dde0e4;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    .pc-table td:not(:first-child) {
+      text-align: center;
+      width: 172px;
+    }
+
+    .pc-table tbody tr:hover { background: #f0f1f3; }
+    .pc-table tbody tr:last-child td { border-bottom: 0; }
+
+    /* Historial de pautas guardadas */
+    .pc-hist-count { color: var(--pc-muted); font-size: 13px; font-weight: 700; }
+    .pc-hist-foot { padding: 12px 20px; border-top: 1px solid #ecf2f0; text-align: right; }
+
+    .pc-hist-table th {
+      background: #12273f;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+      text-align: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid #0d1b2c;
+    }
+
+    .pc-hist-table td,
+    .pc-hist-table td:not(:first-child) { width: auto; text-align: center; color: var(--pc-ink); }
+    .pc-hist-table th:last-child,
+    .pc-hist-table td:last-child { width: 60px; }
+
+    .pc-pct {
+      display: inline-flex;
+      justify-content: center;
+      width: 64px;
+      padding: 4px 0;
+      border-radius: 0;
+      font-size: 12px;
+      font-weight: 700;
+      background: #e3f4ec;
+      color: #0e8a5f;
+    }
+
+    .pc-pct.warn { background: #e5eef5; color: #3f7cac; }
+    .pc-pct.bad { background: #fdecec; color: #d64545; }
+    .pc-pct.na { background: #eef1f0; color: #5d6f69; }
+
+    .pc-hist-del {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      background: #ffffff;
+      color: #5a6774;
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 140ms, border-color 140ms;
+    }
+
+    .pc-hist-del:hover { color: var(--pc-red); border-color: #eac4c4; }
+
+    /* Encabezado de página */
+    .checklist-page.has-head { padding: 0; overflow: hidden; }
+
+    .page-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      min-height: 64px;
+      padding: 10px 24px;
+      border-bottom: 1px solid #d8dbdf;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .page-head-title { font-size: 17px; font-weight: 700; color: var(--pc-ink); }
+    .page-head-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .page-body { flex: 1; overflow: auto; padding: 26px; }
+
+    /* Buscador */
+    .pc-search {
+      height: 36px;
+      width: 230px;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      padding: 0 12px 0 34px;
+      font-family: var(--font);
+      font-size: 13.5px;
+      color: var(--pc-ink);
+      outline: none;
+      background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a9a94' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") no-repeat 11px center;
+      background-size: 14px;
+      transition: border-color 150ms, box-shadow 150ms;
+    }
+
+    .pc-search:focus { border-color: #12273f; box-shadow: 0 0 0 3px rgba(18, 39, 63, 0.14); }
+
+    .pc-mail { color: #5a6774; font-size: 13px; }
+
+    .pc-count-legend {
+      text-align: center;
+      color: var(--pc-muted);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .pc-hist-table tbody tr:nth-child(even) td { background: #f6f6f6; }
+    .pc-hist-table tbody tr:hover td { background: #eceef0; }
+
+    /* Estados vacíos */
+    .pc-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 52px 20px;
+      text-align: center;
+    }
+
+    .pc-empty-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid var(--pc-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5a6774;
+      margin-bottom: 10px;
+    }
+
+    .pc-empty-icon svg { width: 22px; height: 22px; }
+    .pc-empty-state strong { font-size: 15px; color: var(--pc-ink); }
+    .pc-empty-state span:not(.pc-empty-icon) { font-size: 13px; color: #5a6774; }
+
+    /* Modal */
+    .pc-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(9, 20, 16, 0.45);
+      backdrop-filter: blur(3px);
+    }
+
+    .pc-modal-overlay.open { display: flex; }
+
+    .pc-modal {
+      width: min(480px, 100%);
+      background: #ffffff;
+      border-radius: 0;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: pcModalIn 180ms ease;
+    }
+
+    @keyframes pcModalIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .pc-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #dde0e4;
+    }
+
+    .pc-modal-title { font-size: 16px; font-weight: 700; color: var(--pc-ink); }
+
+    .pc-modal-close {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      background: #ffffff;
+      color: #5a6774;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 140ms, border-color 140ms;
+    }
+
+    .pc-modal-close:hover { color: var(--pc-red); border-color: #eac4c4; }
+
+    .pc-modal-body {
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .pc-modal-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid #dde0e4;
+      background: var(--pc-soft);
+    }
+
+    /* Indicadores */
+    .pc-ind-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .pc-ind-card {
+      background: #f6f6f6;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      padding: 18px 20px;
+    }
+
+    .pc-ind-card span { display: block; color: var(--pc-muted); font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .pc-ind-card strong { font-size: 30px; line-height: 1; color: var(--pc-ink); }
+
+    .pc-ind-body { padding: 18px 20px 20px; }
+
+    .pc-ind-row { margin-bottom: 18px; }
+    .pc-ind-row:last-child { margin-bottom: 0; }
+    .pc-ind-row-head { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; margin-bottom: 8px; }
+    .pc-ind-row-head b { font-weight: 700; }
+    .pc-ind-row-head span { color: var(--pc-muted); font-weight: 700; }
+    .pc-ind-track { height: 10px; border-radius: 0; background: #eef3f1; overflow: hidden; }
+    .pc-ind-fill { height: 100%; border-radius: inherit; background: var(--green); transition: width 400ms ease; }
+
+    .pc-ind-empty { color: #5a6774; font-size: 14px; }
+
+    @media (max-width: 1100px) {
+      .pc-ind-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    .pc-hist-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .pc-btn.small { width: 118px; height: 38px; padding: 0; font-size: 13px; font-weight: 700; justify-content: center; }
+    .pc-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .pc-sel-col { width: 44px !important; }
+    .pc-check { width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; }
+
+    .pc-crit { display: flex; gap: 12px; }
+
+    .pc-crit-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 0;
+      background: var(--green);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .pc-crit-title { font-size: 14px; font-weight: 700; line-height: 1.35; margin-bottom: 4px; color: var(--pc-ink); }
+    .pc-crit-title sup { font-weight: 400; font-size: 7.5px; vertical-align: super; line-height: 0; position: relative; top: -0.2em; }
+    .pc-crit-copy { color: #3f4e5e; font-size: 13.5px; line-height: 1.5; }
+
+    .pc-seg {
+      display: inline-flex;
+      gap: 8px;
+    }
+
+    .pc-seg button {
+      min-width: 56px;
+      height: 34px;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      background: #ffffff;
+      color: var(--pc-muted);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 140ms, color 140ms, border-color 140ms, box-shadow 140ms;
+    }
+
+    .pc-seg button:hover { color: var(--pc-ink); background: #eef0f2; border-color: #aab3bf; }
+    .pc-seg button.on-si { background: var(--pc-green); color: #ffffff; border-color: var(--pc-green); box-shadow: 0 2px 8px rgba(14, 138, 95, 0.25); }
+    .pc-seg button.on-no { background: var(--pc-red); color: #ffffff; border-color: var(--pc-red); box-shadow: 0 2px 8px rgba(214, 69, 69, 0.25); }
+
+    /* Comentarios y nota */
+    .pc-notes-body { padding: 16px 20px 20px; }
+
+    .pc-textarea {
+      width: 100%;
+      min-height: 96px;
+      border: 1px solid var(--pc-border);
+      border-radius: 0;
+      padding: 12px 14px;
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--pc-ink);
+      resize: vertical;
+      outline: none;
+      transition: border-color 150ms, box-shadow 150ms;
+    }
+
+    .pc-textarea:focus {
+      border-color: #12273f;
+      box-shadow: 0 0 0 3px rgba(18, 39, 63, 0.16);
+    }
+
+    .pc-footnote {
+      padding: 12px 20px 16px;
+      color: #3f4e5e;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .pc-footnote strong { color: #12273f; }
+
+    /* Toast */
+    .pc-toast {
+      position: fixed;
+      right: 26px;
+      bottom: 26px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 18px;
+      border-radius: 0;
+      background: #12273f;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 250ms, transform 250ms;
+    }
+
+    .pc-toast.show { opacity: 1; transform: translateY(0); }
+    .pc-toast .tick { color: #4ade80; font-size: 16px; }
+
+    @media (max-width: 1100px) {
+      .pc-obs-body { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .checklist-page { padding: 16px; }
+    }
+
+    @media print {
+      .sidebar, .pc-toast { display: none !important; }
+      .app, .main, .page.checklist-page { height: auto; overflow: visible; }
+      .checklist-page { padding: 0; background: #ffffff; }
+    }
+
+    /* Reservas — barra superior de selección */
+    .reservas-page {
+      flex: 1;
+      padding: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-tabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 64px;
+      padding: 0 24px;
+      border-bottom: 1px solid #d8dbdf;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .page-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: #12273f;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 140ms, color 140ms;
+    }
+
+    .page-tab:hover {
+      color: #3f4e5e;
+    }
+
+    .page-tab svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .page-tab.active {
+      background: #12273f;
+      color: #ffffff;
+    }
+
+    #page-pacientes .page-tab,
+    #page-equipo .page-tab {
+      width: 150px;
+      justify-content: center;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 24px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+    
+
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar">CM</div>
+        <div class="sidebar-profile-info">
+          <strong>Carla Miranda</strong>
+          <span>Enfermera de calidad</span>
+        </div>
+      </div>
+      <a class="nav-item active" href="#" data-page="registro-diario" onclick="showPage('registro-diario',this)"><svg class="nav-icon-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Pautas de supervisión</a>
+      <a class="nav-item" href="#" data-page="indicadores" onclick="showPage('indicadores',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18" />
+          <path d="M7 14l4-4 3 3 5-6" />
+        </svg>Indicadores</a>
+      <a class="nav-item" href="#" data-page="pacientes" onclick="showPage('pacientes',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>Pacientes</a>
+      <a class="nav-item" href="#" data-page="equipo" onclick="showPage('equipo',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6V3z" />
+        </svg>Equipo</a>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-collapse" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>Colapsar</div>
+    </aside>
+
+    <div class="main">
+      <div id="page-equipo" class="page checklist-page has-head">
+        <div class="reservas-page">
+          <div class="page-tabs">
+            <button class="page-tab active" onclick="switchTab('eq-activos', this)">Activos</button>
+            <button class="page-tab" onclick="switchTab('eq-inactivos', this)">Inactivos</button>
+          </div>
+          <div id="tab-eq-activos" class="tab-content active">
+            <div class="pc-shell">
+              <section class="pc-panel">
+                <div class="pc-panel-head">
+                  <div>
+                    <div class="pc-panel-title">Equipo activo</div>
+                  </div>
+                  <div class="pc-hist-actions">
+                    <input class="pc-search" type="search" placeholder="Buscar integrante" oninput="pcBuscarEquipo(this.value)">
+                    <button class="pc-btn small primary" type="button" onclick="pcOpenModal('integrante')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Añadir</button>
+                  </div>
+                </div>
+                <div class="pc-table-wrap">
+                  <table class="pc-table pc-hist-table">
+                    <thead>
+                      <tr>
+                        <th>N°</th>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Edad</th>
+                        <th>Celular</th>
+                        <th>Email</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="pcEquipoBody"></tbody>
+                  </table>
+                </div>
+              </section>
+              <div class="pc-count-legend" id="pcEquipoCount"></div>
+            </div>
+          </div>
+          <div id="tab-eq-inactivos" class="tab-content">
+            <div class="pc-shell">
+              <section class="pc-panel">
+                <div class="pc-panel-head">
+                  <div>
+                    <div class="pc-panel-title">Equipo inactivo</div>
+                  </div>
+                  <div class="pc-hist-actions">
+                    <input class="pc-search" type="search" placeholder="Buscar integrante" oninput="pcBuscarEquipoInactivos(this.value)">
+                  </div>
+                </div>
+                <div class="pc-table-wrap">
+                  <table class="pc-table pc-hist-table">
+                    <thead>
+                      <tr>
+                        <th>N°</th>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Edad</th>
+                        <th>Celular</th>
+                        <th>Email</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="pcEquipoInactBody"></tbody>
+                  </table>
+                </div>
+              </section>
+              <div class="pc-count-legend" id="pcEquipoInactCount"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="page-registro-diario" class="page active">
+        <div class="reservas-page">
+          <div class="page-tabs">
+            <button class="page-tab active" onclick="switchTab('gimnasio', this)">Pautas de cotejo</button>
+            <button class="page-tab" onclick="switchTab('piscina', this)">Pautas registradas</button>
+          </div>
+
+          <div id="tab-gimnasio" class="tab-content active">
+            <div class="pc-shell">
+              <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; gap:12px; flex-wrap:wrap;">
+                <div>
+                  <div style="font-family:var(--font-head);font-size:19px;font-weight:700;color:var(--pc-ink);line-height:1.3;">Procedimientos de hemodiálisis</div>
+                  <div style="font-size:14px;color:var(--pc-muted);margin-top:5px;line-height:1.45;">Procedimiento, pausa de seguridad y preconexión, previo al procedimiento de conexión del paciente al monitor de hemodiálisis</div>
+                </div>
+                <button class="pc-btn small primary" type="button" onclick="pcSave()">Registrar</button>
+              </div>
+
+              <section class="pc-obs-grid" id="pcObsGrid"></section>
+
+              <section class="pc-panel">
+                <div class="pc-panel-head">
+                  <div>
+                    <div class="pc-panel-title">Criterios a evaluar</div>
+                  </div>
+                  <div class="pc-hist-actions">
+                    <div class="pc-legend">
+                      <span><i style="background: #0e8a5f"></i>Cumple</span>
+                      <span><i style="background: #d64545"></i>No cumple</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pc-table-wrap">
+                  <table class="pc-table">
+                    <tbody id="pcTableBody"></tbody>
+                  </table>
+                </div>
+              </section>
+              <div class="pc-footnote" style="margin-top:0;padding-top:4px;"><strong><sup style="font-size:8px;">1</sup> CEC:</strong> circuito extracorpóreo (incluye línea arterial, línea venosa y filtro)</div>
+            </div>
+          </div>
+          <div id="tab-piscina" class="tab-content">
+            <div class="pc-shell">
+              <section class="pc-panel">
+                <div class="pc-panel-head">
+                  <div>
+                    <div class="pc-panel-title">Pautas registradas</div>
+                  </div>
+                  <div class="pc-hist-actions">
+                    <button class="pc-btn small print" type="button" onclick="pcPrintSeleccion()">Imprimir</button>
+                    <button class="pc-btn small pdf" type="button" onclick="pcPrintSeleccion()">Descargar PDF</button>
+                    <button class="pc-btn small word" type="button" onclick="pcDescargarWord()">Descargar Word</button>
+                  </div>
+                </div>
+                <div class="pc-table-wrap" id="pcHistWrap" style="display: none;">
+                  <table class="pc-table pc-hist-table">
+                    <thead>
+                      <tr>
+                        <th class="pc-sel-col"><input type="checkbox" class="pc-check" id="pcSelAll" aria-label="Seleccionar todas" onchange="pcToggleSelAll(this.checked)"></th>
+                        <th>Fecha</th>
+                        <th>Paciente</th>
+                        <th>Evaluado</th>
+                        <th>Evaluador</th>
+                        <th>Cumplimiento</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="pcHistBody"></tbody>
+                  </table>
+                  <div class="pc-hist-foot"><span class="pc-hist-count" id="pcHistCount">0 registros</span></div>
+                </div>
+                <div class="pc-empty-state" id="pcHistEmpty">
+                  <span class="pc-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+                  <strong>Aún no hay pautas guardadas</strong>
+                  <span>Completa una pauta en "Pautas de cotejo" y presiona Registrar</span>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div class="pc-toast" id="pcToast"><span class="tick">✓</span><span id="pcToastMsg">Evaluación guardada</span></div>
+      </div>
+      <div id="page-pacientes" class="page checklist-page has-head">
+        <div class="reservas-page">
+          <div class="page-tabs">
+            <button class="page-tab active" onclick="switchTab('pac-activos', this)">Activos</button>
+            <button class="page-tab gold" onclick="switchTab('pac-inactivos', this)">Inactivos</button>
+          </div>
+          <div id="tab-pac-activos" class="tab-content active">
+        <div class="pc-shell">
+          <section class="pc-panel">
+            <div class="pc-panel-head">
+              <div>
+                <div class="pc-panel-title">Pacientes activos</div>
+              </div>
+              <div class="pc-hist-actions">
+                <input class="pc-search" type="search" placeholder="Buscar paciente" oninput="pcBuscarPacientes(this.value)">
+                <button class="pc-btn small primary" type="button" onclick="pcOpenModal('paciente')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Añadir</button>
+              </div>
+            </div>
+            <div class="pc-table-wrap">
+              <table class="pc-table pc-hist-table">
+                <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Paciente</th>
+                    <th>RUT</th>
+                    <th>Edad</th>
+                    <th>Celular</th>
+                    <th>Email</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="pcPacBody"></tbody>
+              </table>
+            </div>
+          </section>
+          <div class="pc-count-legend" id="pcPacCount"></div>
+        </div>
+          </div>
+          <div id="tab-pac-inactivos" class="tab-content">
+            <div class="pc-shell">
+              <section class="pc-panel">
+                <div class="pc-panel-head">
+                  <div>
+                    <div class="pc-panel-title">Pacientes inactivos</div>
+                  </div>
+                  <div class="pc-hist-actions">
+                    <input class="pc-search" type="search" placeholder="Buscar paciente" oninput="pcBuscarPacientesInactivos(this.value)">
+                  </div>
+                </div>
+                <div class="pc-table-wrap">
+                  <table class="pc-table pc-hist-table">
+                    <thead>
+                      <tr>
+                        <th>N°</th>
+                        <th>Paciente</th>
+                        <th>RUT</th>
+                        <th>Edad</th>
+                        <th>Celular</th>
+                        <th>Email</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="pcPacInactBody"></tbody>
+                  </table>
+                </div>
+              </section>
+              <div class="pc-count-legend" id="pcPacInactCount"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="page-indicadores" class="page checklist-page has-head">
+        <div class="page-head">
+          <div class="page-head-title">Indicadores</div>
+        </div>
+        <div class="page-body">
+          <div class="pc-shell">
+            <div class="pc-ind-fila">
+              <div>
+                <section class="pc-panel">
+                  <div class="pc-panel-head">
+                    <div>
+                      <div class="pc-panel-title">Cumplimiento general</div>
+                      <div class="pc-panel-sub">Promedio de todas las pautas registradas en el período seleccionado</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                      <div class="pc-filtro">
+                        <label>Año</label>
+                        <select class="pc-select" id="pcIndAnioGenSel" style="width:110px;" onchange="pcRenderIndicadores()"></select>
+                      </div>
+                      <div class="pc-filtro">
+                        <label>Trimestre</label>
+                        <select class="pc-select" id="pcIndTriGenSel" style="width:110px;" onchange="pcRenderIndicadores()">
+                          <option value="">Todos</option>
+                          <option value="1">Trimestre 1</option>
+                          <option value="2">Trimestre 2</option>
+                          <option value="3">Trimestre 3</option>
+                          <option value="4">Trimestre 4</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pc-chart" id="pcChart"></div>
+                  <div class="pc-count-legend" id="pcIndLegend" style="background:#ffffff;padding:0 16px 18px;font-weight:400;"></div>
+                </section>
+              </div>
+              <div>
+                <section class="pc-panel">
+                  <div class="pc-panel-head">
+                    <div>
+                      <div class="pc-panel-title">Cumplimiento por evaluado</div>
+                      <div class="pc-panel-sub">Promedio de las pautas del evaluado en el período seleccionado</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                      <div class="pc-filtro">
+                        <label>Evaluado</label>
+                        <select class="pc-select" id="pcIndEvaluadoSel" style="width:auto;min-width:180px;" onchange="pcRenderIndicadorEvaluado()"></select>
+                      </div>
+                      <div class="pc-filtro">
+                        <label>Año</label>
+                        <select class="pc-select" id="pcIndAnioSel" style="width:110px;" onchange="pcRenderIndicadorEvaluado()"></select>
+                      </div>
+                      <div class="pc-filtro">
+                        <label>Trimestre</label>
+                        <select class="pc-select" id="pcIndTriSel" style="width:110px;" onchange="pcRenderIndicadorEvaluado()">
+                          <option value="">Todos</option>
+                          <option value="1">Trimestre 1</option>
+                          <option value="2">Trimestre 2</option>
+                          <option value="3">Trimestre 3</option>
+                          <option value="4">Trimestre 4</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pc-chart" id="pcChartEvaluado"></div>
+                  <div class="pc-count-legend" id="pcIndEvaluadoLegend" style="background:#ffffff;padding:0 16px 18px;font-weight:400;"></div>
+                </section>
+              </div>
+            </div>
+
+            <section class="pc-panel" style="margin-top:22px;">
+              <div class="pc-panel-head">
+                <div>
+                  <div class="pc-panel-title">Evolución del cumplimiento</div>
+                  <div class="pc-panel-sub">Promedio de cumplimiento por trimestre desde 2020 hasta hoy</div>
+                </div>
+              </div>
+              <div class="pc-chart" id="pcChartEvolucion"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div id="page-monitoreo" class="page"></div>
+      <div id="page-deals" class="page"></div>
+      <div id="page-pagos" class="page"></div>
+      <div id="page-configuracion" class="page"></div>
+      <div id="page-avisos" class="page"></div>
+      <div id="page-mensajes" class="page"></div>
+      <div id="page-venta-garage" class="page"></div>
+    </div><!-- /main -->
+  </div><!-- /app -->
+
+  <div class="pc-modal-overlay" id="pcModalOverlay" onclick="if (event.target === this) pcCloseModal()">
+    <div class="pc-modal" role="dialog" aria-modal="true" aria-labelledby="pcModalTitle">
+      <div class="pc-modal-head">
+        <div class="pc-modal-title" id="pcModalTitle">Añadir</div>
+        <button class="pc-modal-close" type="button" aria-label="Cerrar" onclick="pcCloseModal()">✕</button>
+      </div>
+      <div class="pc-modal-body" id="pcModalBody"></div>
+      <div class="pc-modal-foot">
+        <button class="pc-btn small" type="button" onclick="pcCloseModal()">Cancelar</button>
+        <button class="pc-btn small primary" type="button" onclick="pcSubmitModal()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showPage(page, el) {
+      document.querySelectorAll('.sidebar .nav-item, .sidebar .nav-sub-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll(`[data-page="${page}"]`).forEach(i => i.classList.add('active'));
+      if (el) el.classList.add('active');
+      // Si es una sub-opción, resalta y mantiene abierto su grupo padre
+      const group = el && el.closest && el.closest('.nav-group');
+      if (group) {
+        group.classList.add('open');
+        const parent = group.querySelector('.nav-parent');
+        if (parent) parent.classList.add('active');
+      }
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page-' + page);
+      if (target) target.classList.add('active');
+    }
+
+    function toggleNavGroup(id) {
+      const group = document.getElementById(id);
+      if (group) group.classList.toggle('open');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const requestedPage = window.location.hash.slice(1);
+      if (!/^[a-z0-9-]+$/.test(requestedPage)) return;
+      const requestedLink = document.querySelector(`.sidebar .nav-item[data-page="${requestedPage}"]`);
+      if (requestedLink && document.getElementById('page-' + requestedPage)) {
+        showPage(requestedPage, requestedLink);
+      }
+    });
+
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar) sidebar.classList.toggle('collapsed');
+    }
+
+    function switchTab(tab, btn) {
+      const scope = btn.closest('.reservas-page') || document;
+      scope.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+      scope.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const content = scope.querySelector('#tab-' + tab) || document.getElementById('tab-' + tab);
+      if (content) content.classList.add('active');
+    }
+    /* ===== Pauta de cotejo — lógica ===== */
+    const PC_STORAGE_KEY = 'pautaCotejoGCL11v2';
+    const PC_HISTORY_KEY = 'pautaCotejoRegistros';
+    let pcEvaluadores = ['Amanda Lucía Vergara Soto', 'Isidora Paz Fuenzalida Riquelme', 'Tomás Andrés Salinas Bravo'];
+    let pcEvaluados = ['Camila Fernanda Ortiz Lagos', 'Javiera Constanza Riveros Peña', 'Matías Alejandro Cornejo Vidal'];
+
+    function pcSyncRoles() {
+      const evaluadores = pcEquipo.filter(m => m.rol === 'evaluador').map(m => m.nombre);
+      const evaluados = pcEquipo.filter(m => m.rol === 'evaluado').map(m => m.nombre);
+      if (evaluadores.length) pcEvaluadores = evaluadores;
+      if (evaluados.length) pcEvaluados = evaluados;
+    }
+    const pcPacientes = [
+      { nombre: 'Ana Sofía Rojas Fuentes', rut: '12.345.678-5', edad: 54, celular: '+56 9 8123 4567', email: 'ana.rojas@correo.cl' },
+      { nombre: 'Carlos Andrés Soto Vergara', rut: '9.876.543-3', edad: 67, celular: '+56 9 7654 3210', email: 'carlos.soto@correo.cl' },
+      { nombre: 'Claudia Beatriz Torres Leiva', rut: '14.220.315-8', edad: 48, celular: '+56 9 6543 2109', email: 'claudia.torres@correo.cl' },
+      { nombre: 'Diego Ignacio Paredes Silva', rut: '17.654.321-0', edad: 39, celular: '+56 9 5432 1098', email: 'diego.paredes@correo.cl' },
+      { nombre: 'Fernanda Paz Gutiérrez Mora', rut: '11.098.765-4', edad: 61, celular: '+56 9 4321 0987', email: 'fernanda.gutierrez@correo.cl' },
+      { nombre: 'Jorge Luis Contreras Pinto', rut: '8.765.432-1', edad: 72, celular: '+56 9 3210 9876', email: 'jorge.contreras@correo.cl' },
+      { nombre: 'María José Herrera Castro', rut: '13.456.789-2', edad: 45, celular: '+56 9 2109 8765', email: 'maria.herrera@correo.cl' },
+      { nombre: 'Pablo Esteban Navarro Díaz', rut: '16.789.012-6', edad: 58, celular: '+56 9 1098 7654', email: 'pablo.navarro@correo.cl' },
+      { nombre: 'Roberto Antonio Vidal Espinoza', rut: '10.234.567-9', edad: 63, celular: '+56 9 9087 6543', email: 'roberto.vidal@correo.cl' },
+      { nombre: 'Valentina Andrea Morales Reyes', rut: '15.321.654-7', edad: 51, celular: '+56 9 8076 5432', email: 'valentina.morales@correo.cl' },
+    ];
+    const pcPacientesInactivos = [
+      { nombre: 'Andrés Felipe Bustos Carrasco', rut: '7.654.321-6', edad: 76, celular: '+56 9 7123 8890', email: 'andres.bustos@correo.cl' },
+      { nombre: 'Beatriz Elena Fuentes Salazar', rut: '9.012.345-1', edad: 69, celular: '+56 9 6234 7781', email: 'beatriz.fuentes@correo.cl' },
+      { nombre: 'Gonzalo Patricio Lagos Miranda', rut: '13.579.246-4', edad: 55, celular: '+56 9 5345 6672', email: 'gonzalo.lagos@correo.cl' },
+      { nombre: 'Lorena Isabel Cáceres Muñoz', rut: '12.468.135-9', edad: 62, celular: '+56 9 4456 5563', email: 'lorena.caceres@correo.cl' },
+      { nombre: 'Sergio Manuel Peña Olivares', rut: '10.987.654-2', edad: 71, celular: '+56 9 3567 4454', email: 'sergio.pena@correo.cl' },
+    ];
+    const pcCriterios = [
+      { titulo: 'Verifica identificación del paciente', copy: 'Verifica que la credencial o tarjeta de identificación corresponde al paciente y que la lleva puesta' },
+      { titulo: 'Verifica CEC<sup>1</sup> correcto', copy: 'Menciona en voz alta nombre y apellidos del paciente registrados en el circuito, filtro y líneas' },
+      { titulo: 'Realiza o supervisa test de ausencia de ácido peracético', copy: 'Ejecuta la verificación inmediatamente antes de conectar al paciente' },
+    ];
+
+    function pcDefaultState() {
+      return {
+        obs: { fecha: '', paciente: '', posicion: '', evaluado: '', evaluador: '' },
+        marks: pcCriterios.map(() => null),
+        comentarios: '',
+      };
+    }
+
+    let pcState = pcDefaultState();
+
+    function pcOptions(list, selected) {
+      return list.map(item => `<option value="${item}" ${String(item) === String(selected) ? 'selected' : ''}>${item}</option>`).join('');
+    }
+
+    function pcRenderObs() {
+      const grid = document.getElementById('pcObsGrid');
+      if (!grid) return;
+      const obs = pcState.obs;
+      const paciente = pcPacientes.find(p => p.nombre === obs.paciente);
+      grid.innerHTML = `
+        <article class="pc-obs-card">
+          <div class="pc-obs-head">
+            <div class="pc-obs-title">Datos de la observación</div>
+          </div>
+          <div class="pc-obs-body">
+            <div class="pc-field">
+              <label>Fecha</label>
+              <input type="date" class="pc-input" value="${obs.fecha}" onchange="pcField('fecha', this.value)">
+            </div>
+            <div class="pc-field">
+              <label>Posición de observación</label>
+              <select class="pc-select" onchange="pcField('posicion', this.value)">
+                <option value="" disabled ${obs.posicion ? '' : 'selected'}>Seleccionar</option>
+                ${pcOptions(Array.from({ length: 12 }, (_, n) => n + 1), obs.posicion)}
+              </select>
+            </div>
+            <div class="pc-field">
+              <label>Paciente</label>
+              <select class="pc-select" onchange="pcField('paciente', this.value)">
+                <option value="" disabled ${obs.paciente ? '' : 'selected'}>Seleccionar</option>
+                ${pcOptions(pcPacientes.map(p => p.nombre), obs.paciente)}
+              </select>
+            </div>
+            <div class="pc-field">
+              <label>RUT del paciente</label>
+              <div class="pc-rut ${paciente ? '' : 'empty'}" id="pcRut">${paciente ? paciente.rut : 'Se completa al seleccionar un paciente'}</div>
+            </div>
+            <div class="pc-field">
+              <label>Evaluado</label>
+              <select class="pc-select" onchange="pcField('evaluado', this.value)">
+                <option value="" disabled ${obs.evaluado ? '' : 'selected'}>Seleccionar</option>
+                ${pcOptions(pcEvaluados, obs.evaluado)}
+              </select>
+            </div>
+            <div class="pc-field">
+              <label>Evaluador</label>
+              <select class="pc-select" onchange="pcField('evaluador', this.value)">
+                <option value="" disabled ${obs.evaluador ? '' : 'selected'}>Seleccionar</option>
+                ${pcOptions(pcEvaluadores, obs.evaluador)}
+              </select>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function pcField(key, value) {
+      pcState.obs[key] = value;
+      if (key === 'paciente') {
+        const paciente = pcPacientes.find(p => p.nombre === value);
+        const rutBox = document.getElementById('pcRut');
+        if (rutBox) {
+          rutBox.textContent = paciente ? paciente.rut : 'Se completa al seleccionar un paciente';
+          rutBox.classList.toggle('empty', !paciente);
+        }
+        pcRenderTable();
+      }
+    }
+
+    function pcMark(c, value) {
+      pcState.marks[c] = pcState.marks[c] === value ? null : value;
+      pcRenderTable();
+    }
+
+    function pcRenderTable() {
+      const body = document.getElementById('pcTableBody');
+      if (!body) return;
+      body.innerHTML = pcCriterios.map((crit, c) => {
+        const mark = pcState.marks[c];
+        const cell = `<td>
+            <div class="pc-seg">
+              <button type="button" class="${mark === 'si' ? 'on-si' : ''}" aria-pressed="${mark === 'si'}" onclick="pcMark(${c}, 'si')">Sí</button>
+              <button type="button" class="${mark === 'no' ? 'on-no' : ''}" aria-pressed="${mark === 'no'}" onclick="pcMark(${c}, 'no')">No</button>
+            </div>
+          </td>`;
+        return `<tr>
+        <td>
+          <div class="pc-crit">
+            <span class="pc-crit-num">${c + 1}</span>
+            <div>
+              <div class="pc-crit-title">${crit.titulo}</div>
+              <div class="pc-crit-copy">${crit.copy}</div>
+            </div>
+          </div>
+        </td>
+        ${cell}
+      </tr>`;
+      }).join('');
+    }
+
+    let pcRegistros = [];
+
+    function pcComputeResumen(state) {
+      let si = 0, no = 0, pend = 0;
+      state.marks.forEach(mark => {
+        if (mark === 'si') si++;
+        else if (mark === 'no') no++;
+        else pend++;
+      });
+      const answered = si + no;
+      return { si, no, pend, pct: answered ? Math.round((si / answered) * 100) : null };
+    }
+
+    function pcSave() {
+      const obs = pcState.obs;
+      const faltantes = [];
+      if (!obs.fecha) faltantes.push('Fecha');
+      if (!obs.posicion) faltantes.push('Posición de observación');
+      if (!obs.paciente) faltantes.push('Paciente');
+      if (!obs.evaluado) faltantes.push('Evaluado');
+      if (!obs.evaluador) faltantes.push('Evaluador');
+      pcState.marks.forEach((mark, i) => {
+        if (mark === null) faltantes.push(`Criterio ${i + 1}: ${pcCriterios[i].titulo}`);
+      });
+      if (faltantes.length > 0) {
+        alert('Faltan los siguientes campos por completar:\n\n• ' + faltantes.join('\n• '));
+        return;
+      }
+      try {
+        const registro = {
+          id: Date.now(),
+          guardadoEl: new Date().toLocaleString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
+          obs: { ...pcState.obs },
+          marks: [...pcState.marks],
+          resumen: pcComputeResumen(pcState),
+        };
+        pcRegistros.push(registro);
+        localStorage.setItem(PC_HISTORY_KEY, JSON.stringify(pcRegistros));
+        pcRenderRegistros();
+        pcShowToast('Pauta guardada en el registro');
+      } catch (e) {
+        pcShowToast('No se pudo guardar la pauta');
+      }
+    }
+
+    function pcDescargarWord() {
+      const selArr = pcRegistros.filter(r => pcSeleccion.has(r.id));
+      const registros = selArr.length > 0 ? selArr : pcRegistros;
+      if (registros.length === 0) { pcShowToast('No hay pautas para descargar'); return; }
+      let html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='UTF-8'><title>Pautas de supervisión</title></head><body>`;
+      registros.forEach((r, idx) => {
+        const pct = r.resumen.pct !== null ? r.resumen.pct + '%' : 'Sin evaluar';
+        html += `<h2>Pauta ${idx + 1} — ${pcFormatFecha(r.obs.fecha)}</h2>`;
+        html += `<p><b>Paciente:</b> ${r.obs.paciente || '—'} &nbsp; <b>RUT:</b> ${(pcPacientes.find(p => p.nombre === r.obs.paciente) || {}).rut || '—'}</p>`;
+        html += `<p><b>Evaluado:</b> ${r.obs.evaluado || '—'} &nbsp; <b>Evaluador:</b> ${r.obs.evaluador || '—'} &nbsp; <b>Cumplimiento:</b> ${pct}</p>`;
+        html += `<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><tr><th>Criterio</th><th>Resultado</th></tr>`;
+        r.marks.forEach((mark, c) => {
+          html += `<tr><td>${pcCriterios[c].titulo}</td><td>${mark === 'si' ? 'Cumple' : mark === 'no' ? 'No cumple' : '—'}</td></tr>`;
+        });
+        html += `</table><br>`;
+      });
+      html += `</body></html>`;
+      const blob = new Blob(['﻿', html], { type: 'application/msword' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'pautas-supervision.doc';
+      a.click();
+    }
+
+    function pcLoadRegistros() {
+      try {
+        const raw = localStorage.getItem(PC_HISTORY_KEY);
+        const saved = JSON.parse(raw || '[]');
+        if (Array.isArray(saved)) pcRegistros = saved;
+      } catch (e) { /* registro vacío */ }
+    }
+
+    function pcDeleteRegistro(id) {
+      pcRegistros = pcRegistros.filter(registro => registro.id !== id);
+      pcSeleccion.delete(id);
+      try { localStorage.setItem(PC_HISTORY_KEY, JSON.stringify(pcRegistros)); } catch (e) {}
+      pcRenderRegistros();
+      pcShowToast('Registro eliminado');
+    }
+
+    let pcSeleccion = new Set();
+
+    function pcToggleSel(id, checked) {
+      if (checked) pcSeleccion.add(id);
+      else pcSeleccion.delete(id);
+      pcSyncSelAll();
+    }
+
+    function pcToggleSelAll(checked) {
+      pcSeleccion = checked ? new Set(pcRegistros.map(registro => registro.id)) : new Set();
+      pcRenderRegistros();
+    }
+
+    function pcSyncSelAll() {
+      const all = document.getElementById('pcSelAll');
+      if (all) all.checked = pcRegistros.length > 0 && pcRegistros.every(registro => pcSeleccion.has(registro.id));
+    }
+
+    function pcPrintSeleccion() {
+      const seleccion = pcRegistros.filter(registro => pcSeleccion.has(registro.id));
+      if (!seleccion.length) {
+        pcShowToast('Selecciona al menos una pauta');
+        return;
+      }
+      const bloques = seleccion.map(registro => {
+        const r = registro.resumen || { si: 0, no: 0, pct: null };
+        const filas = pcCriterios.map((crit, c) => {
+          const mark = (registro.marks || [])[c];
+          const valor = mark === 'si' ? 'Sí' : mark === 'no' ? 'No' : '—';
+          return `<tr><td>${c + 1}. ${crit.titulo}</td><td class="mark ${mark || ''}">${valor}</td></tr>`;
+        }).join('');
+        return `<section class="pauta">
+          <h1>Pauta de cotejo GCL 1.1 — Procedimiento de Hemodiálisis</h1>
+          <div class="datos">
+            <div><span>Fecha</span><strong>${pcFormatFecha(registro.obs.fecha)}</strong></div>
+            <div><span>Paciente</span><strong>${registro.obs.paciente || '—'}</strong></div>
+            <div><span>RUT</span><strong>${(pcPacientes.find(p => p.nombre === registro.obs.paciente) || {}).rut || '—'}</strong></div>
+            <div><span>Posición</span><strong>${registro.obs.posicion || '—'}</strong></div>
+            <div><span>Evaluado</span><strong>${registro.obs.evaluado || '—'}</strong></div>
+            <div><span>Evaluador</span><strong>${registro.obs.evaluador || '—'}</strong></div>
+            <div><span>Cumplimiento</span><strong>${r.pct === null ? 'Sin evaluar' : r.pct + '%'}</strong></div>
+            <div><span>Guardado</span><strong>${registro.guardadoEl || '—'}</strong></div>
+          </div>
+          <table><thead><tr><th>Criterio</th><th>Registro</th></tr></thead><tbody>${filas}</tbody></table>
+        </section>`;
+      }).join('');
+      const win = window.open('', '_blank');
+      if (!win) {
+        pcShowToast('El navegador bloqueó la ventana de impresión');
+        return;
+      }
+      win.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Pautas de cotejo</title><style>
+        body { font-family: Arial, Helvetica, sans-serif; color: #12273f; margin: 32px; }
+        .pauta { page-break-after: always; }
+        .pauta:last-child { page-break-after: auto; }
+        h1 { font-size: 19px; margin: 0 0 16px; }
+        .datos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 18px; margin-bottom: 18px; }
+        .datos span { display: block; font-size: 10px; text-transform: none; letter-spacing: 0.5px; color: #3f4e5e; margin-bottom: 2px; }
+        .datos strong { font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #c5cad1; padding: 8px 12px; font-size: 13px; text-align: left; }
+        th { background: #f6f6f6; font-size: 11px; text-transform: none; letter-spacing: 0.5px; color: #12273f; }
+        td.mark { width: 90px; text-align: center; font-weight: 700; }
+        td.mark.si { color: #2f8a39; }
+        td.mark.no { color: #d64545; }
+      </style></head><body>${bloques}</body></html>`);
+      win.document.close();
+      win.focus();
+      win.print();
+    }
+
+    function pcFormatFecha(iso) {
+      if (!iso) return '—';
+      const [y, m, d] = iso.split('-');
+      return (y && m && d) ? `${d}-${m}-${y}` : iso;
+    }
+
+    function pcRenderRegistros() {
+      const body = document.getElementById('pcHistBody');
+      const wrap = document.getElementById('pcHistWrap');
+      const empty = document.getElementById('pcHistEmpty');
+      const count = document.getElementById('pcHistCount');
+      if (!body || !wrap || !empty || !count) return;
+      count.textContent = `${pcRegistros.length} registro${pcRegistros.length === 1 ? '' : 's'}`;
+      const hayRegistros = pcRegistros.length > 0;
+      wrap.style.display = hayRegistros ? '' : 'none';
+      empty.style.display = hayRegistros ? 'none' : '';
+      const ordenados = [...pcRegistros].sort((a, b) => String(a.obs.fecha) > String(b.obs.fecha) ? -1 : 1);
+      body.innerHTML = ordenados.map(registro => {
+        const r = registro.resumen || { pct: null };
+        let pctHtml;
+        if (r.pct === null) pctHtml = '<span class="pc-pct na">Sin evaluar</span>';
+        else pctHtml = `<span class="pc-pct ${r.pct >= 80 ? '' : r.pct >= 50 ? 'warn' : 'bad'}">${r.pct}%</span>`;
+        return `<tr>
+          <td class="pc-sel-col"><input type="checkbox" class="pc-check" aria-label="Seleccionar pauta" ${pcSeleccion.has(registro.id) ? 'checked' : ''} onchange="pcToggleSel(${registro.id}, this.checked)"></td>
+          <td>${pcFormatFecha(registro.obs.fecha)}</td>
+          <td>${registro.obs.paciente || '—'}</td>
+          <td>${registro.obs.evaluado || '—'}</td>
+          <td>${registro.obs.evaluador || '—'}</td>
+          <td>${pctHtml}</td>
+          <td><button class="pc-hist-del" type="button" aria-label="Eliminar registro" onclick="pcDeleteRegistro(${registro.id})">✕</button></td>
+        </tr>`;
+      }).join('');
+      pcSyncSelAll();
+      pcRenderIndicadores();
+    }
+
+    function pcColorPct(pct) {
+      return pct >= 80 ? '#0e8a5f' : pct >= 50 ? '#3f7cac' : '#d64545';
+    }
+
+    function pcGaugeSVG(pct) {
+      const ticks = 72, cx = 84, cy = 84, r1 = 66, r2 = 80;
+      const lit = Math.round((pct / 100) * ticks);
+      const color = pcColorPct(pct);
+      let lineas = '';
+      for (let i = 0; i < ticks; i++) {
+        const a = (i / ticks) * 2 * Math.PI - Math.PI / 2;
+        const x1 = (cx + r1 * Math.cos(a)).toFixed(1);
+        const y1 = (cy + r1 * Math.sin(a)).toFixed(1);
+        const x2 = (cx + r2 * Math.cos(a)).toFixed(1);
+        const y2 = (cy + r2 * Math.sin(a)).toFixed(1);
+        lineas += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${i < lit ? color : '#dcdfe3'}" stroke-width="2.4" stroke-linecap="round"/>`;
+      }
+      return `<svg class="pc-gauge-svg" viewBox="0 0 168 168" role="img" aria-label="${pct} de 100">
+        ${lineas}
+        <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"><tspan class="pc-gauge-num" style="fill:${color}">${pct}%</tspan></text>
+      </svg>`;
+    }
+
+    function pcRenderIndicadores() {
+      const chart = document.getElementById('pcChart');
+      const legend = document.getElementById('pcIndLegend');
+      if (!chart) return;
+
+      const selAnio = document.getElementById('pcIndAnioGenSel');
+      const selTri = document.getElementById('pcIndTriGenSel');
+      let anio = '', tri = '';
+      if (selAnio) {
+        const previoAnio = selAnio.value;
+        const anios = Array.from(new Set(pcRegistros.map(r => String((r.obs && r.obs.fecha) || '').slice(0, 4)).filter(a => a.length === 4))).sort();
+        selAnio.innerHTML = `<option value="">Todos</option>` + anios.map(a => `<option value="${a}" ${a === previoAnio ? 'selected' : ''}>${a}</option>`).join('');
+        anio = selAnio.value;
+      }
+      if (selTri) tri = selTri.value;
+
+      let suma = 0, n = 0;
+      pcRegistros.forEach(registro => {
+        const fecha = String((registro.obs && registro.obs.fecha) || '');
+        if (anio && fecha.slice(0, 4) !== anio) return;
+        if (tri) {
+          const mes = Number(fecha.slice(5, 7));
+          if (!mes || String(Math.ceil(mes / 3)) !== tri) return;
+        }
+        const pct = registro.resumen && registro.resumen.pct;
+        if (typeof pct !== 'number') return;
+        suma += pct;
+        n++;
+      });
+
+      if (!n) {
+        chart.innerHTML = `<div class="pc-empty-state">
+          <span class="pc-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>
+          <strong>Sin pautas en el período seleccionado</strong>
+          <span>Prueba con otro año o trimestre, o guarda nuevas pautas de cotejo</span>
+        </div>`;
+        if (legend) legend.textContent = '';
+        pcRenderIndicadorEvaluado();
+        pcRenderEvolucion();
+        return;
+      }
+
+      const pct = Math.round(suma / n);
+      chart.innerHTML = `<div class="pc-gauge-col">${pcGaugeSVG(pct)}</div>`;
+      const filtroGen = (anio ? ` · ${anio}` : '') + (tri ? ` · T${tri}` : '');
+      if (legend) legend.textContent = `${n} pauta${n === 1 ? '' : 's'} registrada${n === 1 ? '' : 's'} considerada${n === 1 ? '' : 's'} en la gráfica${filtroGen}`;
+      pcRenderIndicadorEvaluado();
+      pcRenderEvolucion();
+    }
+
+    function pcRenderEvolucion() {
+      const el = document.getElementById('pcChartEvolucion');
+      if (!el) return;
+
+      const grupos = new Map();
+      pcRegistros.forEach(registro => {
+        const fecha = String((registro.obs && registro.obs.fecha) || '');
+        const anio = Number(fecha.slice(0, 4));
+        const mes = Number(fecha.slice(5, 7));
+        const pct = registro.resumen && registro.resumen.pct;
+        if (!anio || !mes || typeof pct !== 'number') return;
+        const t = Math.ceil(mes / 3);
+        const key = anio * 10 + t;
+        if (!grupos.has(key)) grupos.set(key, { anio, t, suma: 0, n: 0 });
+        const g = grupos.get(key);
+        g.suma += pct;
+        g.n++;
+      });
+
+      const pts = Array.from(grupos.values()).sort((a, b) => (a.anio * 10 + a.t) - (b.anio * 10 + b.t));
+      if (pts.length < 2) {
+        el.innerHTML = `<div class="pc-empty-state">
+          <span class="pc-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>
+          <strong>Aún no hay suficientes datos</strong>
+          <span>Guarda pautas de cotejo en distintos períodos para ver la evolución</span>
+        </div>`;
+        return;
+      }
+
+      const x0 = 60, x1 = 1055, yTop = 40, yBot = 335;
+      pcEvoPts = pts.map((p, i) => {
+        const v = Math.round(p.suma / p.n);
+        return {
+          x: x0 + (i / (pts.length - 1)) * (x1 - x0),
+          y: yBot - (v / 100) * (yBot - yTop),
+          v,
+          label: `T${p.t} ${p.anio}`,
+          anio: p.anio,
+          t: p.t,
+        };
+      });
+
+      let hgrid = '', ylab = '';
+      [0, 25, 50, 75, 100].forEach(v => {
+        const y = (yBot - (v / 100) * (yBot - yTop)).toFixed(1);
+        hgrid += `<line x1="45" y1="${y}" x2="1070" y2="${y}"/>`;
+        ylab += `<text class="cashflow-axis-label" x="0" y="${(Number(y) + 5).toFixed(1)}">${v}%</text>`;
+      });
+
+      let vgrid = '', xlab = '';
+      pcEvoPts.forEach(p => {
+        if (p.t === 1) {
+          vgrid += `<line x1="${p.x.toFixed(1)}" y1="${yTop}" x2="${p.x.toFixed(1)}" y2="${yBot}"/>`;
+          xlab += `<text class="cashflow-axis-label" x="${p.x.toFixed(1)}" y="356" text-anchor="middle">${p.anio}</text>`;
+        }
+      });
+
+      const coords = pcEvoPts.map(p => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`);
+      const linea = 'M' + coords.join(' L');
+      const area = `${linea} L${pcEvoPts[pcEvoPts.length - 1].x.toFixed(1)} ${yBot} L${pcEvoPts[0].x.toFixed(1)} ${yBot} Z`;
+      const hits = pcEvoPts.map((p, i) => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="12" fill="transparent" style="cursor:pointer" onmouseenter="pcEvoSel(${i})" onclick="pcEvoSel(${i})"/>`).join('');
+
+      el.innerHTML = `<svg viewBox="0 0 1080 380" preserveAspectRatio="xMinYMid meet" style="width:100%;height:auto;" aria-label="Evolución del cumplimiento general">
+        <defs>
+          <linearGradient id="pcEvoFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#dfc369" stop-opacity=".18"/>
+            <stop offset="1" stop-color="#dfc369" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g stroke="#eeeeeb" stroke-width="1">${hgrid}</g>
+        <g stroke="#eeeeeb" stroke-width="1" stroke-dasharray="11 12">${vgrid}</g>
+        <g fill="#3f4e5e">${ylab}${xlab}</g>
+        <path d="${area}" fill="url(#pcEvoFill)"/>
+        <path d="${linea}" fill="none" stroke="#dfc369" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle id="pcEvoDotOuter" r="4" fill="#dfc369"/>
+        <circle id="pcEvoDot" r="2.4" fill="#fff"/>
+        <rect id="pcEvoTipBox" width="106" height="34" rx="9" fill="#fff" stroke="#e8e8e5"/>
+        <text id="pcEvoTipValue" text-anchor="middle" dominant-baseline="middle" fill="#12273f" font-size="11.5" font-weight="400" font-family="Arial, Helvetica, sans-serif"></text>
+        ${hits}
+      </svg>`;
+      pcEvoSel(pcEvoPts.length - 1);
+    }
+
+    let pcEvoPts = [];
+
+    function pcEvoSel(i) {
+      const p = pcEvoPts[i];
+      if (!p) return;
+      const dot = document.getElementById('pcEvoDot');
+      const dotO = document.getElementById('pcEvoDotOuter');
+      const box = document.getElementById('pcEvoTipBox');
+      const txt = document.getElementById('pcEvoTipValue');
+      if (!dot || !dotO || !box || !txt) return;
+      const bw = 106, bh = 34;
+      const bx = Math.min(Math.max(p.x - bw / 2, 8), 1080 - bw - 8);
+      const by = Math.max(p.y - bh - 14, 6);
+      dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y);
+      dotO.setAttribute('cx', p.x); dotO.setAttribute('cy', p.y);
+      box.setAttribute('x', bx); box.setAttribute('y', by);
+      txt.setAttribute('x', bx + bw / 2); txt.setAttribute('y', by + bh / 2 + 1);
+      txt.textContent = `${p.label} · ${p.v}%`;
+    }
+
+    function pcRenderIndicadorEvaluado() {
+      const sel = document.getElementById('pcIndEvaluadoSel');
+      const selAnio = document.getElementById('pcIndAnioSel');
+      const selTri = document.getElementById('pcIndTriSel');
+      const chart = document.getElementById('pcChartEvaluado');
+      const legend = document.getElementById('pcIndEvaluadoLegend');
+      if (!sel || !chart) return;
+
+      const previo = sel.value;
+      sel.innerHTML = pcEvaluados.map(e => `<option value="${e}" ${e === previo ? 'selected' : ''}>${e}</option>`).join('');
+      const evaluado = sel.value;
+
+      let anio = '', tri = '';
+      if (selAnio) {
+        const previoAnio = selAnio.value;
+        const anios = Array.from(new Set(pcRegistros.map(r => String((r.obs && r.obs.fecha) || '').slice(0, 4)).filter(a => a.length === 4))).sort();
+        selAnio.innerHTML = `<option value="">Todos</option>` + anios.map(a => `<option value="${a}" ${a === previoAnio ? 'selected' : ''}>${a}</option>`).join('');
+        anio = selAnio.value;
+      }
+      if (selTri) tri = selTri.value;
+
+      let suma = 0, n = 0;
+      pcRegistros.forEach(registro => {
+        if (!registro.obs || registro.obs.evaluado !== evaluado) return;
+        const fecha = String(registro.obs.fecha || '');
+        if (anio && fecha.slice(0, 4) !== anio) return;
+        if (tri) {
+          const mes = Number(fecha.slice(5, 7));
+          if (!mes || String(Math.ceil(mes / 3)) !== tri) return;
+        }
+        const pct = registro.resumen && registro.resumen.pct;
+        if (typeof pct !== 'number') return;
+        suma += pct;
+        n++;
+      });
+
+      if (!n) {
+        chart.innerHTML = `<div class="pc-empty-state">
+          <span class="pc-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></span>
+          <strong>Sin pautas para este evaluado en el período seleccionado</strong>
+          <span>Prueba con otro año o trimestre, o guarda nuevas pautas de cotejo</span>
+        </div>`;
+        if (legend) legend.textContent = '';
+        return;
+      }
+
+      const pct = Math.round(suma / n);
+      chart.innerHTML = `<div class="pc-gauge-col">${pcGaugeSVG(pct)}</div>`;
+      const filtro = (anio ? ` · ${anio}` : '') + (tri ? ` · T${tri}` : '');
+      if (legend) legend.textContent = `${n} pauta${n === 1 ? '' : 's'} de ${evaluado}${filtro}`;
+    }
+
+    function pcLoad() {
+      try {
+        const raw = localStorage.getItem(PC_STORAGE_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || typeof saved.obs !== 'object' || Array.isArray(saved.obs) || !Array.isArray(saved.marks)) return;
+        const base = pcDefaultState();
+        pcState = {
+          obs: { ...base.obs, ...saved.obs },
+          marks: base.marks.map((_, c) => ['si', 'no'].includes(saved.marks[c]) ? saved.marks[c] : null),
+          comentarios: typeof saved.comentarios === 'string' ? saved.comentarios : '',
+        };
+      } catch (e) { /* se mantiene el estado por defecto */ }
+    }
+
+    let pcToastTimer;
+    function pcShowToast(msg) {
+      const toast = document.getElementById('pcToast');
+      const label = document.getElementById('pcToastMsg');
+      if (!toast || !label) return;
+      label.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(pcToastTimer);
+      pcToastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function pcRenderAll() {
+      pcRenderObs();
+      pcRenderTable();
+      const comments = document.getElementById('pcComments');
+      if (comments) comments.value = pcState.comentarios;
+    }
+
+    let pcFiltroPacientes = '';
+    let pcFiltroEquipo = '';
+
+    function pcBuscarPacientes(q) {
+      pcFiltroPacientes = q.trim().toLowerCase();
+      pcRenderPacientes();
+    }
+
+    let pcFiltroPacientesInactivos = '';
+
+    function pcBuscarPacientesInactivos(q) {
+      pcFiltroPacientesInactivos = q.trim().toLowerCase();
+      pcRenderPacientesInactivos();
+    }
+
+    function pcBuscarEquipo(q) {
+      pcFiltroEquipo = q.trim().toLowerCase();
+      pcRenderEquipo();
+    }
+
+    function pcRenderPacientes() {
+      const body = document.getElementById('pcPacBody');
+      const count = document.getElementById('pcPacCount');
+      if (!body) return;
+      const lista = pcFiltroPacientes
+        ? pcPacientes.filter(p => `${p.nombre} ${p.rut} ${p.email}`.toLowerCase().includes(pcFiltroPacientes))
+        : pcPacientes;
+      if (count) count.textContent = pcFiltroPacientes
+        ? `${lista.length} de ${pcPacientes.length} pacientes`
+        : `${pcPacientes.length} paciente${pcPacientes.length === 1 ? '' : 's'} registrado${pcPacientes.length === 1 ? '' : 's'}`;
+      if (!lista.length) {
+        body.innerHTML = '<tr><td colspan="7" style="color:#5a6774; padding:26px;">Sin resultados para la búsqueda</td></tr>';
+        return;
+      }
+      const ordenada = [...lista].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+      body.innerHTML = ordenada.map((p, n) => {
+        const i = pcPacientes.indexOf(p);
+        return `<tr>
+        <td>${n + 1}</td>
+        <td>${p.nombre}</td>
+        <td>${p.rut}</td>
+        <td>${p.edad}</td>
+        <td>${p.celular}</td>
+        <td><span class="pc-mail">${p.email}</span></td>
+        <td style="white-space:nowrap;">
+          <button class="pc-hist-del" style="color:#3f7cac;border-color:#3f7cac;margin-right:4px;" title="Editar" onclick="pcEditarPaciente(${i})">✎</button>
+          <button class="pc-hist-del" title="Eliminar" onclick="pcEliminarPaciente(${i})">✕</button>
+        </td>
+      </tr>`;
+      }).join('');
+    }
+
+    const pcEquipo = [
+      { nombre: 'Amanda Lucía Vergara Soto', cargo: 'Enfermera coordinadora', rol: 'evaluador', edad: 41, celular: '+56 9 8811 2233', email: 'amandavergara@clinicaloja.com' },
+      { nombre: 'Isidora Paz Fuenzalida Riquelme', cargo: 'Enfermera de calidad', rol: 'evaluador', edad: 36, celular: '+56 9 8722 3344', email: 'isidorafuenzalida@clinicaloja.com' },
+      { nombre: 'Tomás Andrés Salinas Bravo', cargo: 'Supervisor de diálisis', rol: 'evaluador', edad: 47, celular: '+56 9 8633 4455', email: 'tomassalinas@clinicaloja.com' },
+      { nombre: 'Camila Fernanda Ortiz Lagos', cargo: 'Enfermera de diálisis', rol: 'evaluado', edad: 29, celular: '+56 9 8544 5566', email: 'camilaortiz@clinicaloja.com' },
+      { nombre: 'Javiera Constanza Riveros Peña', cargo: 'Enfermera de diálisis', rol: 'evaluado', edad: 33, celular: '+56 9 8455 6677', email: 'javierariveros@clinicaloja.com' },
+      { nombre: 'Matías Alejandro Cornejo Vidal', cargo: 'Técnico en enfermería', rol: 'evaluado', edad: 38, celular: '+56 9 8366 7788', email: 'matiascornejo@clinicaloja.com' },
+    ];
+    const pcEquipoInactivos = [
+      { nombre: 'Rodrigo Esteban Maldonado Pinto', cargo: 'Enfermero de diálisis', rol: 'evaluado', edad: 45, celular: '+56 9 8277 8899', email: 'rodrigomaldonado@clinicaloja.com' },
+      { nombre: 'Francisca Antonia Sepúlveda Rojas', cargo: 'Enfermera de calidad', rol: 'evaluador', edad: 39, celular: '+56 9 8188 9900', email: 'franciscasepulveda@clinicaloja.com' },
+      { nombre: 'Diego Ignacio Contreras Fuentes', cargo: 'Técnico en enfermería', rol: 'evaluado', edad: 31, celular: '+56 9 8099 0011', email: 'diegocontreras@clinicaloja.com' },
+    ];
+
+    function pcEliminarIntegrante(i) {
+      if (!confirm('¿Mover a ' + pcEquipo[i].nombre + ' a la lista de inactivos?')) return;
+      const m = pcEquipo.splice(i, 1)[0];
+      pcEquipoInactivos.push(m);
+      pcSyncRoles();
+      pcRenderEquipo();
+      pcRenderEquipoInactivos();
+      pcRenderObs();
+      pcRenderIndicadorEvaluado();
+      pcShowToast(m.nombre + ' movido a inactivos');
+    }
+
+    function pcRestaurarIntegrante(i) {
+      const m = pcEquipoInactivos.splice(i, 1)[0];
+      pcEquipo.push(m);
+      pcSyncRoles();
+      pcRenderEquipo();
+      pcRenderEquipoInactivos();
+      pcRenderObs();
+      pcRenderIndicadorEvaluado();
+      pcShowToast(m.nombre + ' restaurado como activo');
+    }
+
+    let pcFiltroEquipoInactivos = '';
+
+    function pcBuscarEquipoInactivos(q) {
+      pcFiltroEquipoInactivos = q.trim().toLowerCase();
+      pcRenderEquipoInactivos();
+    }
+
+    function pcRenderEquipoInactivos() {
+      const body = document.getElementById('pcEquipoInactBody');
+      const count = document.getElementById('pcEquipoInactCount');
+      if (!body) return;
+      const lista = pcFiltroEquipoInactivos
+        ? pcEquipoInactivos.filter(m => `${m.nombre} ${m.cargo} ${m.email}`.toLowerCase().includes(pcFiltroEquipoInactivos))
+        : pcEquipoInactivos;
+      if (count) count.textContent = pcFiltroEquipoInactivos
+        ? `${lista.length} de ${pcEquipoInactivos.length} integrantes inactivos`
+        : `${pcEquipoInactivos.length} integrante${pcEquipoInactivos.length === 1 ? '' : 's'} inactivo${pcEquipoInactivos.length === 1 ? '' : 's'}`;
+      if (!lista.length) {
+        body.innerHTML = `<tr><td colspan="7" style="color:#5a6774; padding:26px;">${pcFiltroEquipoInactivos ? 'Sin resultados para la búsqueda' : 'No hay integrantes inactivos'}</td></tr>`;
+        return;
+      }
+      const ordenada = [...lista].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+      body.innerHTML = ordenada.map((m, n) => {
+        const i = pcEquipoInactivos.indexOf(m);
+        return `<tr>
+        <td>${n + 1}</td>
+        <td>${m.nombre}</td>
+        <td>${m.cargo}</td>
+        <td>${m.edad}</td>
+        <td>${m.celular}</td>
+        <td><span class="pc-mail">${m.email}</span></td>
+        <td style="white-space:nowrap;">
+          <button class="pc-hist-del" style="color:#3f7cac;border-color:#3f7cac;margin-right:4px;" title="Editar" onclick="pcEditarIntegranteInactivo(${i})">✎</button>
+          <button class="pc-hist-del" style="color:#0e8a5f;border-color:#0e8a5f;" title="Restaurar integrante" onclick="pcRestaurarIntegrante(${i})">↩</button>
+        </td>
+      </tr>`;
+      }).join('');
+    }
+
+    function pcRenderEquipo() {
+      const body = document.getElementById('pcEquipoBody');
+      const count = document.getElementById('pcEquipoCount');
+      if (!body) return;
+      const lista = pcFiltroEquipo
+        ? pcEquipo.filter(p => `${p.nombre} ${p.cargo} ${p.email}`.toLowerCase().includes(pcFiltroEquipo))
+        : pcEquipo;
+      if (count) count.textContent = pcFiltroEquipo
+        ? `${lista.length} de ${pcEquipo.length} integrantes`
+        : `${pcEquipo.length} integrante${pcEquipo.length === 1 ? '' : 's'} registrado${pcEquipo.length === 1 ? '' : 's'}`;
+      if (!lista.length) {
+        body.innerHTML = '<tr><td colspan="7" style="color:#5a6774; padding:26px;">Sin resultados para la búsqueda</td></tr>';
+        return;
+      }
+      const ordenada = [...lista].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+      body.innerHTML = ordenada.map((persona, n) => `<tr>
+        <td>${n + 1}</td>
+        <td>${persona.nombre}</td>
+        <td>${persona.cargo}</td>
+        <td>${persona.edad}</td>
+        <td>${persona.celular}</td>
+        <td><span class="pc-mail">${persona.email}</span></td>
+        <td style="white-space:nowrap;">
+          <button class="pc-hist-del" style="color:#3f7cac;border-color:#3f7cac;margin-right:4px;" title="Editar" onclick="pcEditarIntegrante(${pcEquipo.indexOf(persona)})">✎</button>
+          <button class="pc-hist-del" title="Mover a inactivos" onclick="pcEliminarIntegrante(${pcEquipo.indexOf(persona)})">✕</button>
+        </td>
+      </tr>`).join('');
+    }
+
+    /* ===== Modal para añadir ===== */
+    let pcModalTipo = null;
+    const pcModalCampos = {
+      paciente: [
+        { id: 'nombre', label: 'Nombre completo', full: true, placeholder: 'Ej: Ana Sofía Rojas Fuentes' },
+        { id: 'rut', label: 'RUT', placeholder: '12.345.678-5' },
+        { id: 'edad', label: 'Edad', type: 'number', placeholder: '45' },
+        { id: 'celular', label: 'Celular', placeholder: '+56 9 1234 5678' },
+        { id: 'email', label: 'Email', type: 'email', placeholder: 'nombre@correo.cl' },
+      ],
+      integrante: [
+        { id: 'nombre', label: 'Nombre completo', full: true, placeholder: 'Ej: Camila Fernanda Ortiz Lagos' },
+        { id: 'rol', label: 'Rol en la pauta', full: true, select: [['evaluado', 'Evaluado'], ['evaluador', 'Evaluador']] },
+        { id: 'cargo', label: 'Cargo', placeholder: 'Enfermera de diálisis' },
+        { id: 'edad', label: 'Edad', type: 'number', placeholder: '35' },
+        { id: 'celular', label: 'Celular', placeholder: '+56 9 1234 5678' },
+        { id: 'email', label: 'Email', type: 'email', placeholder: 'nombre@clinica.cl' },
+      ],
+    };
+
+    function pcOpenModal(tipo) {
+      pcModalTipo = tipo;
+      const accion = pcEditIdx !== null ? 'Editar' : 'Añadir';
+      document.getElementById('pcModalTitle').textContent = accion + (tipo === 'paciente' ? ' paciente' : ' integrante');
+      document.getElementById('pcModalBody').innerHTML = pcModalCampos[tipo].map(campo => {
+        const control = campo.select
+          ? `<select class="pc-select" id="pcM_${campo.id}">${campo.select.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select>`
+          : `<input class="pc-input" id="pcM_${campo.id}" type="${campo.type || 'text'}" placeholder="${campo.placeholder}">`;
+        return `
+        <div class="pc-field ${campo.full ? 'full' : ''}">
+          <label>${campo.label}</label>
+          ${control}
+        </div>`;
+      }).join('');
+      document.getElementById('pcModalOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('pcM_nombre')?.focus(), 60);
+    }
+
+    let pcEditInactivo = false;
+
+    function pcCloseModal() {
+      document.getElementById('pcModalOverlay').classList.remove('open');
+      pcModalTipo = null;
+      pcEditIdx = null;
+      pcEditInactivo = false;
+    }
+
+    function pcSubmitModal() {
+      if (!pcModalTipo) return;
+      const val = id => (document.getElementById('pcM_' + id)?.value || '').trim();
+      const nombre = val('nombre');
+      if (!nombre) {
+        pcShowToast('El nombre es obligatorio');
+        document.getElementById('pcM_nombre')?.focus();
+        return;
+      }
+      if (pcModalTipo === 'paciente') {
+        const datos = { nombre, rut: val('rut') || '—', edad: val('edad') || '—', celular: val('celular') || '—', email: val('email') || '—' };
+        if (pcEditIdx !== null) {
+          (pcEditInactivo ? pcPacientesInactivos : pcPacientes)[pcEditIdx] = datos;
+          pcEditIdx = null;
+          pcShowToast('Paciente actualizado');
+        } else {
+          pcPacientes.push(datos);
+          pcShowToast('Paciente añadido');
+        }
+        pcRenderObs();
+        pcRenderPacientes();
+        pcRenderPacientesInactivos();
+      } else {
+        const datos = { nombre, rol: val('rol') || 'evaluado', cargo: val('cargo') || '—', edad: val('edad') || '—', celular: val('celular') || '—', email: val('email') || '—' };
+        if (pcEditIdx !== null) {
+          (pcEditInactivo ? pcEquipoInactivos : pcEquipo)[pcEditIdx] = datos;
+          pcEditIdx = null;
+          pcShowToast('Integrante actualizado');
+        } else {
+          pcEquipo.push(datos);
+          pcShowToast('Integrante añadido');
+        }
+        pcRenderEquipoInactivos();
+        pcSyncRoles();
+        pcRenderEquipo();
+        pcRenderObs();
+        pcRenderIndicadorEvaluado();
+      }
+      pcCloseModal();
+    }
+
+    function pcEditarIntegrante(i) {
+      pcEditIdx = i;
+      const m = pcEquipo[i];
+      pcOpenModal('integrante');
+      setTimeout(() => {
+        ['nombre', 'rol', 'cargo', 'edad', 'celular', 'email'].forEach(k => {
+          const el = document.getElementById('pcM_' + k);
+          if (el) el.value = m[k] || '';
+        });
+      }, 30);
+    }
+
+    function pcEditarIntegranteInactivo(i) {
+      pcEditIdx = i;
+      pcEditInactivo = true;
+      const m = pcEquipoInactivos[i];
+      pcOpenModal('integrante');
+      setTimeout(() => {
+        ['nombre', 'rol', 'cargo', 'edad', 'celular', 'email'].forEach(k => {
+          const el = document.getElementById('pcM_' + k);
+          if (el) el.value = m[k] || '';
+        });
+      }, 30);
+    }
+
+    function pcEditarPacienteInactivo(i) {
+      pcEditIdx = i;
+      pcEditInactivo = true;
+      const p = pcPacientesInactivos[i];
+      pcOpenModal('paciente');
+      setTimeout(() => {
+        ['nombre', 'rut', 'edad', 'celular', 'email'].forEach(k => {
+          const el = document.getElementById('pcM_' + k);
+          if (el) el.value = p[k] || '';
+        });
+      }, 30);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') pcCloseModal();
+    });
+
+    function pcRenderPacientesInactivos() {
+      const body = document.getElementById('pcPacInactBody');
+      const count = document.getElementById('pcPacInactCount');
+      if (!body) return;
+      const lista = pcFiltroPacientesInactivos
+        ? pcPacientesInactivos.filter(p => `${p.nombre} ${p.rut} ${p.email}`.toLowerCase().includes(pcFiltroPacientesInactivos))
+        : pcPacientesInactivos;
+      if (count) count.textContent = pcFiltroPacientesInactivos
+        ? `${lista.length} de ${pcPacientesInactivos.length} pacientes inactivos`
+        : `${pcPacientesInactivos.length} paciente${pcPacientesInactivos.length === 1 ? '' : 's'} inactivo${pcPacientesInactivos.length === 1 ? '' : 's'}`;
+      if (!lista.length) {
+        body.innerHTML = '<tr><td colspan="7" style="color:#5a6774; padding:26px;">Sin resultados para la búsqueda</td></tr>';
+        return;
+      }
+      const ordenada = [...lista].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+      body.innerHTML = ordenada.map((p, n) => {
+        const i = pcPacientesInactivos.indexOf(p);
+        return `<tr>
+        <td>${n + 1}</td>
+        <td>${p.nombre}</td>
+        <td>${p.rut}</td>
+        <td>${p.edad}</td>
+        <td>${p.celular}</td>
+        <td><span class="pc-mail">${p.email}</span></td>
+        <td style="white-space:nowrap;">
+          <button class="pc-hist-del" style="color:#3f7cac;border-color:#3f7cac;margin-right:4px;" title="Editar" onclick="pcEditarPacienteInactivo(${i})">✎</button>
+          <button class="pc-hist-del" style="color:#0e8a5f;border-color:#0e8a5f;" title="Restaurar paciente" onclick="pcRestaurarPaciente(${i})">↩</button>
+        </td>
+      </tr>`;
+      }).join('');
+    }
+
+    let pcEditIdx = null;
+
+    function pcEliminarPaciente(i) {
+      if (!confirm('¿Mover a ' + pcPacientes[i].nombre + ' a la lista de inactivos?')) return;
+      const p = pcPacientes.splice(i, 1)[0];
+      pcPacientesInactivos.push(p);
+      pcRenderPacientes();
+      pcRenderPacientesInactivos();
+      pcRenderObs();
+      pcShowToast(p.nombre + ' movido a inactivos');
+    }
+
+    function pcEditarPaciente(i) {
+      pcEditIdx = i;
+      const p = pcPacientes[i];
+      pcOpenModal('paciente');
+      setTimeout(() => {
+        ['nombre','rut','edad','celular','email'].forEach(k => {
+          const el = document.getElementById('pcM_' + k);
+          if (el) el.value = p[k] || '';
+        });
+      }, 30);
+    }
+
+    function pcRestaurarPaciente(i) {
+      const p = pcPacientesInactivos.splice(i, 1)[0];
+      pcPacientes.push(p);
+      pcRenderPacientes();
+      pcRenderPacientesInactivos();
+      pcRenderObs();
+      pcShowToast(p.nombre + ' restaurado como activo');
+    }
+
+    const PC_SEED_KEY = 'pautaCotejoSeedV8';
+
+    function pcSeedRegistros() {
+      if (localStorage.getItem(PC_SEED_KEY)) return;
+      // Pautas completas desde 2020: cada evaluado cubre todos los trimestres (hasta T3 2026)
+      // Patrones por evaluado: mantienen su promedio en verde, azul y rojo respectivamente
+      const patrones = [
+        [['si', 'si', 'si'], ['si', 'si', 'si'], ['si', 'no', 'si'], ['si', 'si', 'si']],
+        [['si', 'no', 'si'], ['si', 'si', 'no'], ['si', 'si', 'si'], ['no', 'si', 'si']],
+        [['si', 'no', 'no'], ['no', 'no', 'si'], ['si', 'si', 'no'], ['no', 'no', 'no']],
+      ];
+      pcRegistros = [];
+      let i = 0;
+      let semilla = 42;
+      const pcRnd = () => {
+        semilla = (semilla * 1103515245 + 12345) % 2147483648;
+        return semilla / 2147483648;
+      };
+      for (let anio = 2020; anio <= 2026; anio++) {
+        for (let t = 1; t <= 4; t++) {
+          if (anio === 2026 && t > 3) continue;
+          const mes = t * 3 - 1;
+          patrones.forEach((patron, ev) => {
+            const marks = patron[Math.floor(pcRnd() * 4)];
+            const dia = 5 + ((i * 3) % 20);
+            const fecha = `${anio}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+            pcRegistros.push({
+              id: Date.now() + i,
+              guardadoEl: pcFormatFecha(fecha),
+              obs: {
+                fecha,
+                paciente: pcPacientes[i % pcPacientes.length].nombre,
+                posicion: String((i % 12) + 1),
+                evaluado: pcEvaluados[ev],
+                evaluador: pcEvaluadores[i % pcEvaluadores.length],
+              },
+              marks: [...marks],
+              resumen: pcComputeResumen({ marks }),
+            });
+            i++;
+          });
+        }
+      }
+      pcRegistros.sort((a, b) => a.obs.fecha < b.obs.fecha ? -1 : 1);
+      try {
+        localStorage.setItem(PC_HISTORY_KEY, JSON.stringify(pcRegistros));
+        localStorage.setItem(PC_SEED_KEY, '1');
+      } catch (e) {}
+    }
+
+    function pcInit() {
+      pcLoadRegistros();
+      pcSeedRegistros();
+      pcRenderAll();
+      pcRenderRegistros();
+      pcRenderPacientes();
+      pcRenderPacientesInactivos();
+      pcRenderEquipo();
+      pcRenderEquipoInactivos();
+    }
+    
+
+    pcInit();
+  </script>
+</body>
+
+</html>
