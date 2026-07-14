@@ -1030,8 +1030,202 @@
     .tab-content.active {
       display: block;
     }
-    
 
+    /* ===== Barra superior y cajón de navegación (solo móvil) ===== */
+    .mobile-topbar { display: none; }
+    .sidebar-backdrop { display: none; }
+
+    .mobile-menu-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 0;
+      background: transparent;
+      color: var(--t1);
+      cursor: pointer;
+    }
+
+    .mobile-menu-btn svg { width: 20px; height: 20px; }
+
+    .mobile-topbar-title {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1280px) {
+      .pc-ind-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 860px) {
+      html, body { font-size: 14px; }
+
+      .app { height: 100dvh; }
+
+      .mobile-topbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 56px;
+        padding: 0 14px;
+        flex-shrink: 0;
+        background: var(--s1);
+        color: var(--t1);
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* La barra lateral pasa a ser un cajón deslizante */
+      .sidebar,
+      .sidebar.collapsed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 60;
+        width: 264px;
+        padding: 0 12px;
+        transform: translateX(-100%);
+        transition: transform 260ms ease;
+      }
+
+      .sidebar.open { transform: none; }
+
+      /* En móvil el modo colapsado no aplica: el cajón siempre va completo */
+      .sidebar.collapsed .sidebar-profile-info { display: flex; }
+      .sidebar.collapsed .nav-item,
+      .sidebar.collapsed .nav-sub-item { font-size: 14px; }
+      .sidebar.collapsed .nav-item,
+      .sidebar.collapsed .sidebar-profile {
+        justify-content: flex-start;
+        gap: 12px;
+      }
+      .sidebar.collapsed .sidebar-profile {
+        margin-left: -12px;
+        margin-right: -12px;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .sidebar.collapsed .nav-sub-group,
+      .sidebar.collapsed .nav-chevron,
+      .sidebar.collapsed .nav-parent-label { display: revert; }
+      .sidebar.collapsed .nav-sub-group { display: flex; }
+
+      .sidebar-collapse { display: none; }
+
+      .sidebar-backdrop.show {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        background: rgba(9, 20, 16, 0.45);
+      }
+
+      /* Objetivos táctiles más generosos */
+      .nav-item { min-height: 46px; }
+
+      .page-head {
+        min-height: 0;
+        padding: 12px 16px;
+      }
+
+      .page-body { padding: 16px; }
+      .tab-content { padding: 16px; }
+      .checklist-page { padding: 16px; }
+
+      .page-tabs {
+        height: 56px;
+        padding: 0 12px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .page-tabs::-webkit-scrollbar { display: none; }
+      .page-tab { flex-shrink: 0; }
+
+      #page-pacientes .page-tab,
+      #page-equipo .page-tab { width: auto; }
+
+      /* Cabeceras de panel: buscador y botones a lo ancho */
+      .pc-panel-head { padding: 14px 16px; }
+      .pc-hist-actions { width: 100%; }
+      .pc-search { width: 100%; flex: 1 1 160px; }
+      .pc-btn { width: auto; flex: 1 1 auto; min-width: 120px; padding: 0 14px; }
+      .pc-btn.small { width: auto; flex: 1 1 auto; min-width: 104px; }
+
+      .pc-obs-body { grid-template-columns: 1fr; padding: 14px; }
+      .pc-obs-head { padding: 12px 14px; }
+
+      .pc-ind-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pc-ind-card { padding: 14px 16px; }
+      .pc-ind-card strong { font-size: 24px; }
+
+      .pc-chart { padding: 14px; gap: 24px; }
+      .pc-gauge-svg { width: min(230px, 72vw); height: auto; }
+
+      .pc-modal-body { grid-template-columns: 1fr; }
+      .pc-modal-foot .pc-btn { flex: 1 1 0; }
+
+      .pc-toast {
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+        justify-content: center;
+      }
+    }
+
+    /* La tabla de criterios solo tiene 2 columnas: no necesita el min-width de las de historial */
+    .pc-table:not(.pc-hist-table) { min-width: 0; }
+
+    /* La tabla de criterios se apila en vez de hacer scroll horizontal */
+    @media (max-width: 860px) {
+      .pc-table:not(.pc-hist-table) tr {
+        display: block;
+        border-bottom: 1px solid #dde0e4;
+      }
+
+      .pc-table:not(.pc-hist-table) tbody tr:last-child { border-bottom: 0; }
+
+      .pc-table:not(.pc-hist-table) td {
+        display: block;
+        width: auto;
+        border-bottom: 0;
+        padding: 14px 14px 0;
+      }
+
+      .pc-table:not(.pc-hist-table) td:not(:first-child) {
+        width: auto;
+        text-align: left;
+        padding: 12px 14px 14px 54px;
+      }
+
+      .pc-seg button { flex: 1 1 0; min-width: 72px; }
+      .pc-seg { display: flex; width: 100%; max-width: 260px; }
+    }
+
+    @media (max-width: 560px) {
+      .checklist-page { padding: 12px; }
+      .page-body,
+      .tab-content { padding: 12px; }
+      .pc-ind-grid { grid-template-columns: 1fr; }
+      .pc-shell { gap: 12px; }
+      .pc-hist-actions { gap: 8px; }
+      .pc-legend { flex-wrap: wrap; gap: 8px 12px; }
+      .pc-empty-state { padding: 36px 16px; }
+    }
+
+    @media print {
+      .mobile-topbar,
+      .sidebar-backdrop { display: none !important; }
+    }
   </style>
 </head>
 
@@ -1068,7 +1262,13 @@
         </svg>Colapsar</div>
     </aside>
 
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileNav()"></div>
+
     <div class="main">
+      <div class="mobile-topbar">
+        <button class="mobile-menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" id="mobileMenuBtn" onclick="toggleMobileNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <span class="mobile-topbar-title">Pautas de cotejo</span>
+      </div>
       <div id="page-equipo" class="page checklist-page has-head">
         <div class="reservas-page">
           <div class="page-tabs">
@@ -1412,7 +1612,30 @@
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       const target = document.getElementById('page-' + page);
       if (target) target.classList.add('active');
+      closeMobileNav();
     }
+
+    function setMobileNav(open) {
+      const sidebar = document.querySelector('.sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      const btn = document.getElementById('mobileMenuBtn');
+      if (sidebar) sidebar.classList.toggle('open', open);
+      if (backdrop) backdrop.classList.toggle('show', open);
+      if (btn) btn.setAttribute('aria-expanded', String(open));
+    }
+
+    function toggleMobileNav() {
+      const sidebar = document.querySelector('.sidebar');
+      setMobileNav(!(sidebar && sidebar.classList.contains('open')));
+    }
+
+    function closeMobileNav() { setMobileNav(false); }
+
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileNav(); });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 860) closeMobileNav();
+    });
 
     function toggleNavGroup(id) {
       const group = document.getElementById(id);
